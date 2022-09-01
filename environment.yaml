@@ -1,3 +1,7 @@
+/**:
+  ros__parameters:
+    use_sim_time: True
+
 amr2:
   rosbag_recorder:
     ros__parameters:
