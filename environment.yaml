@@ -1,8 +1,99 @@
-local_costmap:
-  local_costmap:
+amr2:
+  rosbag_recorder:
     ros__parameters:
-      update_frequency: 5.0
+      topics: # Without leading slash (/) if it is to be prepended with namespace
+        [
+          "global_costmap/costmap",
+          "global_plan",
+          "local_costmap/costmap",
+          "local_costmap/published_footprint",
+          "local_costmap/voxel_grid",
+          "obstacles_markers",
+          "teb_markers",
+          "teb_poses",
+          "tf",
+          "tf_static",
+          "create_feasible_putdown_goal",
+          "joint_states",
+          "cmd_vel",
+          "cmd_vel_smoothed",
+          "tricycle_controller/cmd_ackermann",
+          "speed_limit",
+          "speed_limit_close_vehicle",
+          "speed_limit_w2mo_path",
+          "odometry/filtered",
+          "load_sensor_status",
+          "/clock",
+          "/layout/custom_objects",
+          "/layout/paths",
+          "/layout/process_points",
+          "/layout/racks",
+          "/layout/stations",
+          "/occupancy_grid",
+          "/occupancy_grid_updates",
+          "/rosout",
+          "diagnostics",
+          "bt_logs_publisher/behavior_tree_log",
+          "realsense_right/color/image_raw",
+          "realsense_left/color/image_raw",
+          "rgb/image_raw",
+        ]
+      bags_dir: "/data/rosbags" # Without last slash (/). if changed also change /code/deep_cv/docker/rosbags
+      max_duration: 400
+      upload_enabled: True
+      storage_format: mcap #https://github.com/ros2/rosbag2#storage-format-plugin-architecture
 
-rosbag_recorder:
-  ros__parameters:
-    upload_enabled: True
+
+  controller_manager:
+    ros__parameters:
+      use_sim_time: true
+      fork_controller:
+        type: joint_trajectory_controller/JointTrajectoryController # velocity_controllers/JointPositionController should be enough but not ported to ROS2 yet https://github.com/ros-controls/ros2_controllers/tree/foxy/velocity_controllers/src
+
+  joint_state_broadcaster:
+    ros__parameters:
+      extra_joints: ["right_wheel_joint", "left_wheel_joint"]
+
+  tricycle_controller:
+    ros__parameters:
+      traction:
+        max_acceleration: 5.0
+        max_deceleration: 8.0
+      steering:
+        max_position: 1.57 # pi/2
+        max_velocity: 1.0
+
+  fork_controller:
+    ros__parameters:
+      joints:
+        - forks_lift_joint
+      command_interfaces:
+        - position
+      state_interfaces:
+        - position
+
+  analyzers:
+    ros__parameters:
+      Nav2:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: Nav2
+        contains: ["Nav2"]
+      Battery:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: BatterySoc
+        contains: ["battery_soc"]
+      BarcodeCameras:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: BarcodeCamerasStatus
+        contains: ["barcode_cameras_status"]
+      KalmanFilter:
+        type: "diagnostic_aggregator/AnalyzerGroup"
+        path: KalmanFilter
+        ekf_node:
+          type: diagnostic_aggregator/GenericAnalyzer
+          path: ekf_node_status
+          contains: ["Filter diagnostic updater"]
+        ekf_odom_topic:
+          type: diagnostic_aggregator/GenericAnalyzer
+          path: ekf_odom_topic_status
+          contains: ["odometry/filtered topic status"]
