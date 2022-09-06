@@ -10,14 +10,16 @@ controller_manager:
       type: joint_state_broadcaster/JointStateBroadcaster
 
     fork_controller:
-      type: joint_trajectory_controller/JointTrajectoryController # velocity_controllers/JointPositionController should be enough but not ported to ROS2 yet https://github.com/ros-controls/ros2_controllers/tree/foxy/velocity_controllers/src
+      type: joint_trajectory_controller/JointTrajectoryController
 
 joint_state_broadcaster:
   ros__parameters:
+    use_sim_time: true
     extra_joints: ["right_wheel_joint", "left_wheel_joint"]
 
 tricycle_controller:
   ros__parameters:
+    use_sim_time: true
     traction_joint_name: traction_joint
     steering_joint_name: steering_joint
     use_stamped_vel: false
@@ -35,6 +37,7 @@ tricycle_controller:
 
 fork_controller:
   ros__parameters:
+    use_sim_time: true
     joints:
       - forks_lift_joint
     command_interfaces:
