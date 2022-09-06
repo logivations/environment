@@ -1,0 +1,49 @@
+# Applying a variable namespace with /** causes all the parameters to be available for all the node
+# because of https://github.com/ros2/rclcpp/issues/1265.
+# Both the controller manager and the controllers use the update_rate parameter and setting it
+# for both makes the controllers slower. To hack this we temporarily renamed the parameter for the controllers
+# https://github.com/ros-controls/ros2_control/commit/95413af68faf236116c709c74e175572a21c75af
+
+/**: # controller_manager
+  ros__parameters:
+    update_rate: 50 # Hz
+    use_sim_time: true
+
+    tricycle_controller:
+      type: tricycle_controller/TricycleController
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    fork_controller:
+      type: joint_trajectory_controller/JointTrajectoryController # velocity_controllers/JointPositionController should be enough but not ported to ROS2 yet https://github.com/ros-controls/ros2_controllers/tree/foxy/velocity_controllers/src
+
+/**: # joint_state_broadcaster
+  ros__parameters:
+    extra_joints: ["right_wheel_joint", "left_wheel_joint"]
+
+/**: # tricycle_controller
+  ros__parameters:
+    traction_joint_name: traction_joint
+    steering_joint_name: steering_joint
+    use_stamped_vel: false
+    enable_odom_tf: false
+    pose_covariance_diagonal: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    twist_covariance_diagonal: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    odom_only_twist: true
+    publish_ackermann_command: true
+    traction:
+      max_acceleration: 5.0
+      max_deceleration: 8.0
+    steering:
+      max_position: 1.57 # pi/2
+      max_velocity: 1.0
+
+/**: # fork_controller
+  ros__parameters:
+    joints:
+      - forks_lift_joint
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
