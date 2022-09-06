@@ -1,4 +1,4 @@
-/**:
+rosbag_recorder:
   ros__parameters:
     topics: # Without leading slash (/) if it is to be prepended with namespace
       [
