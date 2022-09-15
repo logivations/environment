@@ -1,0 +1,16 @@
+/**:
+  rosbag_recorder:
+    ros__parameters:
+      topics: # Without leading slash (/) if it is to be prepended with namespace
+        [
+          "global_costmap/costmap",
+          "global_plan",
+          "local_costmap/costmap",
+          "local_costmap/published_footprint",
+          "local_costmap/voxel_grid",
+          "obstacles_markers",
+          "teb_markers",
+          "teb_poses",
+          "tf",
+          "tf_static",
+        ]
