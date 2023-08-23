@@ -1,0 +1,16 @@
+/**:
+  ros__parameters:
+    intrinsic: # For gazebo we use lower resolution
+      basler_bottom: # 12mm lens
+        fx: 2992.207792208
+        fy: 3013.953488372
+        cy: 540
+        cx: 960
+        dist: [0.0, 0.0, 0.0, 0.0, 0.0]
+
+      basler_top: # 8mm lens
+        fx: 1994.805194805
+        fy: 2009.302325581
+        cy: 540
+        cx: 960
+        dist: [0.0, 0.0, 0.0, 0.0, 0.0]

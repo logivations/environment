@@ -1,0 +1,4 @@
+/**:
+  barcode_scanner_manager:
+    ros__parameters:
+      barcode_size: [0.28, 0.095] # width, height in meters
