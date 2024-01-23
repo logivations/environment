@@ -1,0 +1,5 @@
+/**:
+  collision_monitor:
+    ros__parameters:
+      pointcloud:
+        source_timeout: 0.0 # Disable watchdog, as there is no pointcloud in simple sim
